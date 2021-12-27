@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      working-directory: .\docker\mssqlssis
+      working-directory: ./docker/mssqlssis
       IMAGE_NAME: mssqlssis
       IMAGE_ID: ${{secrets.OPENSHIFT_REGISTRY}}/5b7aa5-tools/mssqlssis
 
@@ -60,7 +60,7 @@ jobs:
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ env.IMAGE_ID }}
-      working-directory: .\docker\mssqlssis
+      working-directory: ${{env.working-directory}}
     - name: push to container registry  
       shell: bash
       run: |
