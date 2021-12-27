@@ -14,7 +14,8 @@ jobs:
     env:
       CI: true
       working-directory: .\docker\mssqlssis
-      IMAGE_ID: ${{secrets.OPENSHIFT_REGISTRY}}/5b7aa5-tools/pims-api
+      IMAGE_NAME: mssqlssis
+      IMAGE_ID: ${{secrets.OPENSHIFT_REGISTRY}}/5b7aa5-tools/mssqlssis
 
     steps:
     - uses: actions/checkout@v2
@@ -56,10 +57,11 @@ jobs:
           registry: ${{secrets.OPENSHIFT_REGISTRY}}
           username: ${{ secrets.OC_USERNAME_SA }}
           password: ${{ secrets.OPENSHIFT_TOKEN }}
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag mssqlssis
-      working-directory: .\docker\mssqlssis
-    - name: push to container registry  
-      run: |
-          docker tag mssqlssis $IMAGE_ID:latest
-          docker push $IMAGE_ID:latest
+    -
+      name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+          context: .
+          push: true
+          tags:  ${{secrets.OPENSHIFT_REGISTRY}}/5b7aa5-tools/mssqlssis:latest
+
