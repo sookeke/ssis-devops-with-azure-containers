@@ -57,15 +57,13 @@ jobs:
           registry: ${{secrets.OPENSHIFT_REGISTRY}}
           username: ${{ secrets.OC_USERNAME_SA }}
           password: ${{ secrets.OPENSHIFT_TOKEN }}
-    -
-      name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-    -
-      name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-          context: .\docker\mssqlssis
-          push: true
-          tags:  ${{secrets.OPENSHIFT_REGISTRY}}/5b7aa5-tools/mssqlssis:latest
 
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{ env.IMAGE_ID }}
+      working-directory: .\docker\mssqlssis
+    - name: push to container registry  
+      shell: bash
+      run: |
+          #docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_ID }}:latest
+          docker image ls
+          docker push ${{ env.IMAGE_ID }}:latest
